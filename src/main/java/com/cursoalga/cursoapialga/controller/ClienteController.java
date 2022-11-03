@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cursoalga.cursoapialga.domain.service.CatalogoClienteService;
 import com.cursoalga.cursoapialga.model.Cliente;
 import com.cursoalga.cursoapialga.repository.ClienteRepository;
 
@@ -27,6 +28,7 @@ import lombok.AllArgsConstructor;
 public class ClienteController {
 
     private ClienteRepository clienteRepository;
+    private CatalogoClienteService cataloClienteService;
 
     @GetMapping
     public List<Cliente> listar() {
@@ -49,7 +51,7 @@ public class ClienteController {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public Cliente adicionar(@Valid @RequestBody Cliente cliente) {
-        return clienteRepository.save(cliente);
+        return cataloClienteService.salvar(cliente);
     }
 
     @PutMapping("/{clienteId}")
@@ -58,7 +60,7 @@ public class ClienteController {
             return ResponseEntity.notFound().build();
         }
         cliente.setId(clienteId);
-        cliente = clienteRepository.save(cliente);
+        cliente = cataloClienteService.salvar(cliente);
         return ResponseEntity.ok(cliente);
     }
 
@@ -68,7 +70,7 @@ public class ClienteController {
             return ResponseEntity.notFound().build();
         }
 
-        clienteRepository.deleteById(clienteId);
+        cataloClienteService.excluir(clienteId);
         return ResponseEntity.noContent().build();
     }
 }
