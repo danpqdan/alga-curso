@@ -1,6 +1,7 @@
 package com.cursoalga.cursoapialga.exceptionhandler;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.cursoalga.cursoapialga.domain.EntidadeNaoEncontradaException;
 import com.cursoalga.cursoapialga.domain.NegocioException;
 
 import lombok.AllArgsConstructor;
@@ -41,7 +43,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         Problema problema = new Problema();
         problema.setStatus(status.value());
         problema.setCampo(campos);
-        problema.setDataHota(LocalDateTime.now());
+        problema.setDataHota(OffsetDateTime.now());
         problema.setTitulo("Um ou mais campos estão invalidos. Faça o preenchimento correto");
 
         return handleExceptionInternal(ex, problema, headers, status, request);
@@ -53,7 +55,19 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         Problema problema = new Problema();
         problema.setStatus(status.value());
-        problema.setDataHota(LocalDateTime.now());
+        problema.setDataHota(OffsetDateTime.now());
+        problema.setTitulo(ex.getMessage());
+
+        return handleExceptionInternal(ex, problema, new HttpHeaders(), status, request);
+    }
+
+    @ExceptionHandler(EntidadeNaoEncontradaException.class)
+    public ResponseEntity<Object> handleEntidadeNaoEncontrada(NegocioException ex, WebRequest request) {
+        HttpStatus status = HttpStatus.NOT_FOUND;
+
+        Problema problema = new Problema();
+        problema.setStatus(status.value());
+        problema.setDataHota(OffsetDateTime.now());
         problema.setTitulo(ex.getMessage());
 
         return handleExceptionInternal(ex, problema, new HttpHeaders(), status, request);

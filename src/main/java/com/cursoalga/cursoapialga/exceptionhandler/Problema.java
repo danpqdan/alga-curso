@@ -1,6 +1,7 @@
 package com.cursoalga.cursoapialga.exceptionhandler;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -15,7 +16,7 @@ import lombok.Setter;
 @JsonInclude(Include.NON_NULL)
 public class Problema {
     Integer status;
-    LocalDateTime dataHota;
+    OffsetDateTime dataHota;
     String titulo;
     List<Campos> campo;
 
