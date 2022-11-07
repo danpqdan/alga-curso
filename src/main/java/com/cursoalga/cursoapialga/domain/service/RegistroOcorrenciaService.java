@@ -4,10 +4,8 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
-import com.cursoalga.cursoapialga.domain.NegocioException;
 import com.cursoalga.cursoapialga.model.Entrega;
 import com.cursoalga.cursoapialga.model.Ocorrencia;
-import com.cursoalga.cursoapialga.repository.EntregaRepository;
 
 import lombok.AllArgsConstructor;
 

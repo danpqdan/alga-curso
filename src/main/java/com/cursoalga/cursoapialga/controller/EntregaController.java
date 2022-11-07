@@ -4,12 +4,12 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cursoalga.cursoapialga.DTO.EntregaDTO;
 import com.cursoalga.cursoapialga.DTO.input.EntregaInput;
+import com.cursoalga.cursoapialga.domain.service.FinalizacaoEntregaService;
 import com.cursoalga.cursoapialga.domain.service.SolicitacaoEntregaService;
 import com.cursoalga.cursoapialga.mapper.EntregaMapper;
 import com.cursoalga.cursoapialga.model.Entrega;
@@ -29,6 +30,7 @@ import lombok.AllArgsConstructor;
 @RequestMapping("/entregas")
 public class EntregaController {
 
+    private FinalizacaoEntregaService finalizacaoEntregaService;
     private EntregaRepository entregaRepository;
     private SolicitacaoEntregaService solicitacaoEntregaService;
     private EntregaMapper entregaMapper;
@@ -51,6 +53,12 @@ public class EntregaController {
         return entregaRepository.findById(entregaId)
                 .map(entrega -> ResponseEntity.ok(entregaMapper.toModel(entrega)))
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{entregaId}/finalizacao")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void finalizar(@PathVariable Long entregaId) {
+        finalizacaoEntregaService.finalizar(entregaId);
     }
 
 }
