@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cursoalga.cursoapialga.DTO.EntregaDTO;
+import com.cursoalga.cursoapialga.DTO.input.EntregaInput;
 import com.cursoalga.cursoapialga.domain.service.SolicitacaoEntregaService;
+import com.cursoalga.cursoapialga.mapper.EntregaMapper;
 import com.cursoalga.cursoapialga.model.Entrega;
 import com.cursoalga.cursoapialga.repository.EntregaRepository;
 
@@ -27,22 +31,25 @@ public class EntregaController {
 
     private EntregaRepository entregaRepository;
     private SolicitacaoEntregaService solicitacaoEntregaService;
+    private EntregaMapper entregaMapper;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Entrega solicitarEntrega(@Valid @RequestBody Entrega entrega) {
-        return solicitacaoEntregaService.solicitar(entrega);
+    public EntregaDTO solicitarEntrega(@Valid @RequestBody EntregaInput entregaInput) {
+        Entrega novaEntrega = entregaMapper.toEntity(entregaInput);
+        Entrega entregaSolicitada = solicitacaoEntregaService.solicitar(novaEntrega);
+        return entregaMapper.toModel(entregaSolicitada);
     }
 
     @GetMapping
-    public List<Entrega> listar() {
-        return entregaRepository.findAll();
+    public List<EntregaDTO> listar() {
+        return entregaMapper.toCollectionDTO(entregaRepository.findAll());
     }
 
     @GetMapping("/{entregaId}")
-    public ResponseEntity<Entrega> buscas(@PathVariable Long entregaId) {
+    public ResponseEntity<EntregaDTO> buscas(@PathVariable Long entregaId) {
         return entregaRepository.findById(entregaId)
-                .map(ResponseEntity::ok)
+                .map(entrega -> ResponseEntity.ok(entregaMapper.toModel(entrega)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
